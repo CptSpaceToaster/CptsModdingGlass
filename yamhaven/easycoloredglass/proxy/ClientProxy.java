@@ -8,8 +8,8 @@ public class ClientProxy extends CommonProxy {
 	
 	@Override
 	public void initRenderers() {
-		RenderColoredGlassPaneBlockID = RenderingRegistry.getNextAvailableRenderId();
-		RenderingRegistry.instance().registerBlockHandler(new RenderColoredGlassPaneBlock());
+		//RenderColoredGlassPaneBlockID = RenderingRegistry.getNextAvailableRenderId();
+		//RenderingRegistry.instance().registerBlockHandler(new RenderColoredGlassPaneBlock());
 	}
 	
 	@Override

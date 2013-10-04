@@ -71,6 +71,13 @@ public class ColoredGlassPaneBlock extends BlockPane {
         return edgeIcons[metadata];
     }
     
+    /**  FOR CTM SUPPORT TESTING **/
+    @SideOnly(Side.CLIENT)
+    	public Icon getSideTextureIndex()
+    {
+        return edgeIcons[15];
+    }
+    
     @SideOnly(Side.CLIENT)
 	public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List) {
 		for(int i = 0; i<16; i++) {
@@ -100,7 +107,8 @@ public class ColoredGlassPaneBlock extends BlockPane {
 	
 	public int getRenderType()
     {
-        return ClientProxy.RenderColoredGlassPaneBlockID;
+        //return ClientProxy.RenderColoredGlassPaneBlockID;
+		return 18;
     }
 	
     

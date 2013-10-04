@@ -22,7 +22,7 @@ public class EasyColoredGlass {
 	@EventHandler
 	public static void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
-		proxy.initRenderers();
+		//proxy.initRenderers();
 		Blocks.init();
 	}
 	
