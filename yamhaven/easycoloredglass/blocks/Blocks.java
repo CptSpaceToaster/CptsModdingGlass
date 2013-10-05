@@ -4,8 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import yamhaven.easycoloredglass.lib.BlockIds;
 import yamhaven.easycoloredglass.lib.BlockInfo;
+import yamhaven.easycoloredglass.lib.ModInfo;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
@@ -16,9 +16,9 @@ public class Blocks {
 	public static Block blueLightBlock;
 	
 	public static void init() {
-		coloredSandBlock = new ColoredSandBlock(BlockIds.coloredSandBlockID_actual);
-		coloredGlassBlock = new ColoredGlassBlock(BlockIds.coloredGlassBlockID_actual);
-		coloredGlassPaneBlock = new ColoredGlassPaneBlock(BlockIds.coloredGlassPaneBlockID_actual);
+		coloredSandBlock = new ColoredSandBlock(ModInfo.coloredSandBlockID_actual);
+		coloredGlassBlock = new ColoredGlassBlock(ModInfo.coloredGlassBlockID_actual);
+		coloredGlassPaneBlock = new ColoredGlassPaneBlock(ModInfo.coloredGlassPaneBlockID_actual);
 		
 		GameRegistry.registerBlock(coloredSandBlock, ItemColoredGlassBlock.class, BlockInfo.coloredSandBlock_name);
 		GameRegistry.registerBlock(coloredGlassBlock, ItemColoredGlassBlock.class, BlockInfo.coloredGlassBlock_name);
@@ -43,9 +43,12 @@ public class Blocks {
             ItemStack coloredGlassStack = new ItemStack(coloredGlassBlock, 1, i);
             ItemStack coloredGlassPaneStack = new ItemStack(coloredGlassPaneBlock, 1, i);
 
-            //GameRegistry.addRecipe(coloredGlassStack, "xxx", "xyx", "xxx", 'x', glass, 'y', dye);
-            GameRegistry.addShapelessRecipe(coloredSandStack, sand, dye);
-            FurnaceRecipes.smelting().addSmelting(BlockIds.coloredSandBlockID_actual, i, coloredGlassStack, 0.1f);
+            if(ModInfo.easyRecipes_actual) {
+            	GameRegistry.addRecipe(new ItemStack(coloredSandBlock, 8, i), "xxx", "xyx", "xxx", 'x', sand, 'y', dye);
+            } else {
+            	GameRegistry.addShapelessRecipe(coloredSandStack, sand, dye);
+            }
+            FurnaceRecipes.smelting().addSmelting(ModInfo.coloredSandBlockID_actual, i, coloredGlassStack, 0.1f);
             GameRegistry.addRecipe(new ItemStack(coloredGlassPaneBlock, 16, i), "xxx", "xxx", 'x', coloredGlassStack);
 		}
 	}

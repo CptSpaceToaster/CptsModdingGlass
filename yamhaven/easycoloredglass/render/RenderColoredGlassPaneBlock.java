@@ -5,6 +5,7 @@ import static net.minecraftforge.common.ForgeDirection.NORTH;
 import static net.minecraftforge.common.ForgeDirection.SOUTH;
 import static net.minecraftforge.common.ForgeDirection.WEST;
 import yamhaven.easycoloredglass.blocks.ColoredGlassPaneBlock;
+import yamhaven.easycoloredglass.lib.ModInfo;
 import yamhaven.easycoloredglass.proxy.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.EntityRenderer;
@@ -15,11 +16,14 @@ import net.minecraft.world.IBlockAccess;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import com.prupe.mcpatcher.ctm.ColoredGlassPaneRenderer;
+
+import java.util.Arrays;
 
 public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler {
-
-	//private Object blockAccess;
+	Tessellator tessellator;
 	
+	//private Object blockAccess;
 	@Override
 	public void renderInventoryBlock(Block block, int metadata, int modelID, RenderBlocks renderer) {
 		// TODO Auto-generated method stub
@@ -29,7 +33,17 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
 		if (modelId == ClientProxy.RenderColoredGlassPaneBlockID) 
 		{
-			return renderColoredGlassPane(world, x, y, z, (ColoredGlassPaneBlock) block, renderer);
+			if (!ModInfo.connectedTextures_actual) {
+				return renderColoredGlassPane(world, x, y, z, (ColoredGlassPaneBlock) block, renderer);
+			} else {	
+				try {
+					return ColoredGlassPaneRenderer.render(renderer, (ColoredGlassPaneBlock) block, x, y, z);
+				}
+				catch(Throwable e) {
+					ModInfo.connectedTextures_actual = false;
+					return renderColoredGlassPane(world, x, y, z, (ColoredGlassPaneBlock) block, renderer);
+				}
+			}
 		}
 		return false;
 	}
@@ -45,11 +59,12 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
 		// TODO Auto-generated method stub
 		return ClientProxy.RenderColoredGlassPaneBlockID;
 	}
+	
 	@SideOnly(Side.CLIENT)
 	private boolean renderColoredGlassPane(IBlockAccess world, int par2, int par3, int par4, ColoredGlassPaneBlock par1BlockPane, RenderBlocks renderer)
 	{
 		int l = renderer.blockAccess.getHeight();
-        Tessellator tessellator = Tessellator.instance;
+        tessellator = Tessellator.instance;
         tessellator.setBrightness(par1BlockPane.getMixedBrightnessForBlock(renderer.blockAccess, par2, par3, par4));
         float f = 1.0F;
         int i1 = par1BlockPane.colorMultiplier(renderer.blockAccess, par2, par3, par4);
@@ -476,3 +491,4 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
         return true;
 	}
 }
+

@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
-import yamhaven.easycoloredglass.lib.BlockIds;
 import yamhaven.easycoloredglass.lib.BlockInfo;
 import yamhaven.easycoloredglass.lib.ModInfo;
 import yamhaven.easycoloredglass.proxy.ClientProxy;
@@ -45,7 +44,7 @@ public class ColoredGlassPaneBlock extends BlockPane {
         
         Block.opaqueCubeLookup[par1] = true;
         Block.opaqueCubeLookup[Block.thinGlass.blockID] = true;
-        Block.opaqueCubeLookup[BlockIds.coloredGlassBlockID_actual] = true;
+        Block.opaqueCubeLookup[ModInfo.coloredGlassBlockID_actual] = true;
 	}
     
     @SideOnly(Side.CLIENT)
@@ -107,8 +106,7 @@ public class ColoredGlassPaneBlock extends BlockPane {
 	
 	public int getRenderType()
     {
-        //return ClientProxy.RenderColoredGlassPaneBlockID;
-		return 18;
+        return ClientProxy.RenderColoredGlassPaneBlockID;
     }
 	
     
