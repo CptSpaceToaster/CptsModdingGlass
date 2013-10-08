@@ -1,0 +1,36 @@
+Make sure that you have set the "EasyColoredGlass" configuration file,
+found in "/.minecraft/config/" to the following:
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Configuration file
+
+####################
+# block
+####################
+
+block {
+    I:"Colored Glass"=3880
+    I:"Colored Glass Pane"=3881
+    I:"Colored Sand"=3879
+}
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+This texture reskin will NOT work correctly, if you do not have the correct
+Block ID values set in both the block properties files, and the mod config
+files.
+
+You can edit either the texture properties files to match the Block ID, if
+you have mods using Block IDs in the 3879 to 3881 range, or change the Block
+IDs in the configuration file.
+
+At present, the "Colored Glass Pane" textures do NOT correctly connect to
+each other. This appears to be an issue with how Easy Colored Glass reports
+Glass Pane connectivity. You can try creating a "block3881.properties" file,
+and adding in the appropriate CTM values, but after three hours of failures,
+I've decided to just leave well enough alone, and be happy that the Glass
+Blocks connect to each other.
+
+Anyone who wishes to tackle this problem, feel free to, and let me know if
+you have better results.
