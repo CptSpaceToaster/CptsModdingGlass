@@ -33,16 +33,17 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
 	public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelId, RenderBlocks renderer) {
 		if (modelId == ClientProxy.RenderColoredGlassPaneBlockID) 
 		{
-			if (!ModInfo.connectedTextures_actual) {
-				return renderColoredGlassPane(world, x, y, z, (ColoredGlassPaneBlock) block, renderer);
-			} else {	
+			if (ModInfo.connectedTextures_actual) {	
 				try {
 					return ColoredGlassPaneRenderer.render(renderer, (ColoredGlassPaneBlock) block, x, y, z);
 				}
 				catch(Throwable e) {
+					System.out.println("Oops, Colored Glass Panes Can't use CTM... Defaulting");
 					ModInfo.connectedTextures_actual = false;
 					return renderColoredGlassPane(world, x, y, z, (ColoredGlassPaneBlock) block, renderer);
 				}
+			} else {
+				return renderColoredGlassPane(world, x, y, z, (ColoredGlassPaneBlock) block, renderer);
 			}
 		}
 		return false;
@@ -61,16 +62,16 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
 	}
 	
 	@SideOnly(Side.CLIENT)
-	private boolean renderColoredGlassPane(IBlockAccess world, int par2, int par3, int par4, ColoredGlassPaneBlock par1BlockPane, RenderBlocks renderer)
+	private boolean renderColoredGlassPane(IBlockAccess world, int i, int j, int k, ColoredGlassPaneBlock blockPane, RenderBlocks renderer)
 	{
 		int l = renderer.blockAccess.getHeight();
         tessellator = Tessellator.instance;
-        tessellator.setBrightness(par1BlockPane.getMixedBrightnessForBlock(renderer.blockAccess, par2, par3, par4));
+        tessellator.setBrightness(blockPane.getMixedBrightnessForBlock(renderer.blockAccess, i, j, k));
         float f = 1.0F;
-        int i1 = par1BlockPane.colorMultiplier(renderer.blockAccess, par2, par3, par4);
-        float f1 = (float)(i1 >> 16 & 255) / 255.0F;
-        float f2 = (float)(i1 >> 8 & 255) / 255.0F;
-        float f3 = (float)(i1 & 255) / 255.0F;
+        int n = blockPane.colorMultiplier(renderer.blockAccess, i, j, k);
+        float f1 = (float)(n >> 16 & 255) / 255.0F;
+        float f2 = (float)(n >> 8 & 255) / 255.0F;
+        float f3 = (float)(n & 255) / 255.0F;
 
         if (EntityRenderer.anaglyphEnable)
         {
@@ -86,9 +87,9 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
         Icon icon;
         Icon icon1;
 
-        int metadata = renderer.blockAccess.getBlockMetadata(par2, par3, par4);
-        icon = par1BlockPane.getIcon(0, metadata);
-        icon1 = par1BlockPane.getSideTextureFromMetadata(metadata);
+        int metadata = renderer.blockAccess.getBlockMetadata(i, j, k);
+        icon = blockPane.getIcon(0, metadata);
+        icon1 = blockPane.getSideTextureFromMetadata(metadata);
 
         double d0 = (double)icon.getMinU();
         double d1 = (double)icon.getInterpolatedU(8.0D);
@@ -100,115 +101,118 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
         double d7 = (double)icon1.getMinV();
         double d8 = (double)icon1.getInterpolatedV(8.0D);
         double d9 = (double)icon1.getMaxV();
-        double d10 = (double)par2;
-        double d11 = (double)par2 + 0.5D;
-        double d12 = (double)(par2 + 1);
-        double d13 = (double)par4;
-        double d14 = (double)par4 + 0.5D;
-        double d15 = (double)(par4 + 1);
-        double d16 = (double)par2 + 0.5D - 0.0625D;
-        double d17 = (double)par2 + 0.5D + 0.0625D;
-        double d18 = (double)par4 + 0.5D - 0.0625D;
-        double d19 = (double)par4 + 0.5D + 0.0625D;
-        boolean flag = par1BlockPane.canPaneConnectTo(renderer.blockAccess,par2, par3, par4, NORTH);
-        boolean flag1 = par1BlockPane.canPaneConnectTo(renderer.blockAccess,par2, par3, par4, SOUTH);
-        boolean flag2 = par1BlockPane.canPaneConnectTo(renderer.blockAccess,par2, par3, par4, WEST);
-        boolean flag3 = par1BlockPane.canPaneConnectTo(renderer.blockAccess,par2, par3, par4, EAST);
-        boolean flag4 = par1BlockPane.shouldSideBeRendered(renderer.blockAccess, par2, par3 + 1, par4, 1);
-        boolean flag5 = par1BlockPane.shouldSideBeRendered(renderer.blockAccess, par2, par3 - 1, par4, 0);
+        double i0 = (double)i;
+        double iM = (double)i + 0.5D;
+        double i1 = (double)(i + 1);
+        double j0 = (double)j;
+        double j1 = (double)j + 1.0D;
+        double k0 = (double)k;
+        double kM = (double)k + 0.5D;
+        double k1 = (double)(k + 1);
+        double d16 = (double)i + 0.5D - 0.0625D;
+        double d17 = (double)i + 0.5D + 0.0625D;
+        double d18 = (double)k + 0.5D - 0.0625D;
+        double d19 = (double)k + 0.5D + 0.0625D;
+        boolean connectNorth = blockPane.canPaneConnectTo(renderer.blockAccess,i, j, k, NORTH);
+        boolean connectSouth = blockPane.canPaneConnectTo(renderer.blockAccess,i, j, k, SOUTH);
+        boolean connectWest = blockPane.canPaneConnectTo(renderer.blockAccess,i, j, k, WEST);
+        boolean connectEast = blockPane.canPaneConnectTo(renderer.blockAccess,i, j, k, EAST);
+        boolean connectAny = connectWest || connectEast || connectNorth || connectSouth;
+        boolean connectUp = blockPane.shouldSideBeRendered(renderer.blockAccess, i, j + 1, k, 1);
+        boolean connectDown = blockPane.shouldSideBeRendered(renderer.blockAccess, i, j - 1, k, 0);
         double d20 = 0.01D;
         double d21 = 0.005D;
 
-        if ((!flag2 || !flag3) && (flag2 || flag3 || flag || flag1))
+        if ((!connectWest || !connectEast) && connectAny) //Check for a Half West Pane OR a Half East Pane, AND that there is a connection
         {
-            if (flag2 && !flag3)
+            if (connectWest && !connectEast) //Half West Pane
             {
-                tessellator.addVertexWithUV(d10, (double)(par3 + 1), d14, d0, d3);
-                tessellator.addVertexWithUV(d10, (double)(par3 + 0), d14, d0, d4);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d1, d4);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d1, d3);
+                tessellator.addVertexWithUV(i0, j1, kM, d0, d3);
+                tessellator.addVertexWithUV(i0, j0, kM, d0, d4);
+                tessellator.addVertexWithUV(iM, j0, kM, d1, d4);
+                tessellator.addVertexWithUV(iM, j1, kM, d1, d3);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d0, d3);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d0, d4);
 //                tessellator.addVertexWithUV(d10, (double)(par3 + 0), d14, d1, d4);
 //                tessellator.addVertexWithUV(d10, (double)(par3 + 1), d14, d1, d3);
 
-                if (!flag1 && !flag)
+                if (!connectSouth && !connectNorth) //Check for ONLY a Half West Pane and render the edge in the middle
                 {
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1), d19, d5, d7);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 0), d19, d5, d9);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 0), d18, d6, d9);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1), d18, d6, d7);
+                    tessellator.addVertexWithUV(iM, j1, d19, d5, d7);
+                    tessellator.addVertexWithUV(iM, j0, d19, d5, d9);
+                    tessellator.addVertexWithUV(iM, j0, d18, d6, d9);
+                    tessellator.addVertexWithUV(iM, j1, d18, d6, d7);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1), d18, d5, d7);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 0), d18, d5, d9);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 0), d19, d6, d9);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1), d19, d6, d7);
                 }
 
-                if (flag4 || par3 < l - 1 && renderer.blockAccess.isAirBlock(par2 - 1, par3 + 1, par4))
+                if (connectUp || j < l - 1 && renderer.blockAccess.isAirBlock(i - 1, j + 1, k))	//Top Glass edge for Half West Pane
                 {
-                    tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d19, d6, d8);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d19, d6, d9);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d18, d5, d9);
-                    tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d18, d5, d8);
+                    tessellator.addVertexWithUV(i0, j1 + 0.01D, d19, d6, d8);
+                    tessellator.addVertexWithUV(iM, j1 + 0.01D, d19, d6, d9);
+                    tessellator.addVertexWithUV(iM, j1 + 0.01D, d18, d5, d9);
+                    tessellator.addVertexWithUV(i0, j1 + 0.01D, d18, d5, d8);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d19, d6, d8);
 //                    tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d19, d6, d9);
 //                    tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d18, d5, d9);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d18, d5, d8);
                 }
 
-                if (flag5 || par3 > 1 && renderer.blockAccess.isAirBlock(par2 - 1, par3 - 1, par4))
+                if (connectDown || j > 1 && renderer.blockAccess.isAirBlock(i - 1, j - 1, k)) //Low Glass Edge for Half West Pane
                 {
-                    tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d19, d6, d8);
-                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d19, d6, d9);
-                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d18, d5, d9);
-                    tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d18, d5, d8);
+                    tessellator.addVertexWithUV(i0, (double)j - 0.01D, d19, d6, d8);
+                    tessellator.addVertexWithUV(iM, (double)j - 0.01D, d19, d6, d9);
+                    tessellator.addVertexWithUV(iM, (double)j - 0.01D, d18, d5, d9);
+                    tessellator.addVertexWithUV(i0, (double)j - 0.01D, d18, d5, d8);
 //                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d19, d6, d8);
 //                    tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d19, d6, d9);
 //                    tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d18, d5, d9);
 //                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d18, d5, d8);
                 }
             }
-            else if (!flag2 && flag3)
+            else if (!connectWest && connectEast) //Half East Pane
             {
-                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d1, d3);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d1, d4);
-                tessellator.addVertexWithUV(d12, (double)(par3 + 0), d14, d2, d4);
-                tessellator.addVertexWithUV(d12, (double)(par3 + 1), d14, d2, d3);
+                tessellator.addVertexWithUV(iM, j1, kM, d1, d3);
+                tessellator.addVertexWithUV(iM, j0, kM, d1, d4);
+                tessellator.addVertexWithUV(i1, j0, kM, d2, d4);
+                tessellator.addVertexWithUV(i1, j1, kM, d2, d3);
 //                tessellator.addVertexWithUV(d12, (double)(par3 + 1), d14, d1, d3);
 //                tessellator.addVertexWithUV(d12, (double)(par3 + 0), d14, d1, d4);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d2, d4);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d2, d3);
 
-                if (!flag1 && !flag)
+                if (!connectSouth && !connectNorth) //Check for ONLY a Half East Pane and render the edge in the middle
                 {
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1), d18, d5, d7);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 0), d18, d5, d9);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 0), d19, d6, d9);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1), d19, d6, d7);
+                    tessellator.addVertexWithUV(iM, j1, d18, d5, d7);
+                    tessellator.addVertexWithUV(iM, j0, d18, d5, d9);
+                    tessellator.addVertexWithUV(iM, j0, d19, d6, d9);
+                    tessellator.addVertexWithUV(iM, j1, d19, d6, d7);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1), d19, d5, d7);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 0), d19, d5, d9);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 0), d18, d6, d9);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1), d18, d6, d7);
                 }
 
-                if (flag4 || par3 < l - 1 && renderer.blockAccess.isAirBlock(par2 + 1, par3 + 1, par4))
+                if (connectUp || j < l - 1 && renderer.blockAccess.isAirBlock(i + 1, j + 1, k)) //Top East Edge for Half East Pane
                 {
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d19, d6, d7);
-                    tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d19, d6, d8);
-                    tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d18, d5, d8);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d18, d5, d7);
+                    tessellator.addVertexWithUV(iM, j1 + 0.01D, d19, d6, d7);
+                    tessellator.addVertexWithUV(i1, j1 + 0.01D, d19, d6, d8);
+                    tessellator.addVertexWithUV(i1, j1 + 0.01D, d18, d5, d8);
+                    tessellator.addVertexWithUV(iM, j1 + 0.01D, d18, d5, d7);
 //                    tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d19, d6, d7);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d19, d6, d8);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d18, d5, d8);
 //                    tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d18, d5, d7);
                 }
 
-                if (flag5 || par3 > 1 && renderer.blockAccess.isAirBlock(par2 + 1, par3 - 1, par4))
+                if (connectDown || j > 1 && renderer.blockAccess.isAirBlock(i + 1, j - 1, k)) //Low East Edge for Half East Pane
                 {
-                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d19, d6, d7);
-                    tessellator.addVertexWithUV(d12, (double)par3 - 0.01D, d19, d6, d8);
-                    tessellator.addVertexWithUV(d12, (double)par3 - 0.01D, d18, d5, d8);
-                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d18, d5, d7);
+                    tessellator.addVertexWithUV(iM, (double)j - 0.01D, d19, d6, d7);
+                    tessellator.addVertexWithUV(i1, (double)j - 0.01D, d19, d6, d8);
+                    tessellator.addVertexWithUV(i1, (double)j - 0.01D, d18, d5, d8);
+                    tessellator.addVertexWithUV(iM, (double)j - 0.01D, d18, d5, d7);
 //                    tessellator.addVertexWithUV(d12, (double)par3 - 0.01D, d19, d6, d7);
 //                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d19, d6, d8);
 //                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d18, d5, d8);
@@ -216,48 +220,50 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
                 }
             }
         }
-        else
+        else //Full East West Pane
         {
-            tessellator.addVertexWithUV(d10, (double)(par3 + 1), d14, d0, d3);
-            tessellator.addVertexWithUV(d10, (double)(par3 + 0), d14, d0, d4);
-            tessellator.addVertexWithUV(d12, (double)(par3 + 0), d14, d2, d4);
-            tessellator.addVertexWithUV(d12, (double)(par3 + 1), d14, d2, d3);
+            tessellator.addVertexWithUV(i0, j1, kM, d0, d3);
+            tessellator.addVertexWithUV(i0, j0, kM, d0, d4);
+            tessellator.addVertexWithUV(i1, j0, kM, d2, d4);
+            tessellator.addVertexWithUV(i1, j1, kM, d2, d3);
 //            tessellator.addVertexWithUV(d12, (double)(par3 + 1), d14, d0, d3);
 //            tessellator.addVertexWithUV(d12, (double)(par3 + 0), d14, d0, d4);
 //            tessellator.addVertexWithUV(d10, (double)(par3 + 0), d14, d2, d4);
 //            tessellator.addVertexWithUV(d10, (double)(par3 + 1), d14, d2, d3);
 
-            if (flag4)
+            if (connectUp) //Full Top Edge
             {
-                tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d19, d6, d9);
-                tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d19, d6, d7);
-                tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d18, d5, d7);
-                tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d18, d5, d9);
-//                tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d19, d6, d9);
-//                tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d19, d6, d7);
-//                tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d18, d5, d7);
-//                tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d18, d5, d9);
+                tessellator.addVertexWithUV(i0, j1 + 0.01D, d19, d6, d9);
+                tessellator.addVertexWithUV(i1, j1 + 0.01D, d19, d6, d7);
+                tessellator.addVertexWithUV(i1, j1 + 0.01D, d18, d5, d7);
+                tessellator.addVertexWithUV(i0, j1 + 0.01D, d18, d5, d9);
+                
+//                tessellator.addVertexWithUV(d12, j1 + 0.01D, d19, d6, d9);
+//                tessellator.addVertexWithUV(d10, j1 + 0.01D, d19, d6, d7);
+//                tessellator.addVertexWithUV(d10, j1 + 0.01D, d18, d5, d7);
+//                tessellator.addVertexWithUV(d12, j1 + 0.01D, d18, d5, d9);
             }
-            else
+            else //Not a Full Top Edge
             {
-                if (par3 < l - 1 && renderer.blockAccess.isAirBlock(par2 - 1, par3 + 1, par4))
+                if (j < l - 1 && renderer.blockAccess.isAirBlock(i - 1, j + 1, k)) //West or East Half Top Edge
                 {
-                    tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d19, d6, d8);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d19, d6, d9);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d18, d5, d9);
-                    tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d18, d5, d8);
+                    tessellator.addVertexWithUV(i0, j1 + 0.01D, d19, d6, d8);
+                    tessellator.addVertexWithUV(iM, j1 + 0.01D, d19, d6, d9);
+                    tessellator.addVertexWithUV(iM, j1 + 0.01D, d18, d5, d9);
+                    tessellator.addVertexWithUV(i0, j1 + 0.01D, d18, d5, d8);
+                    
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d19, d6, d8);
 //                    tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d19, d6, d9);
 //                    tessellator.addVertexWithUV(d10, (double)(par3 + 1) + 0.01D, d18, d5, d9);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d18, d5, d8);
                 }
 
-                if (par3 < l - 1 && renderer.blockAccess.isAirBlock(par2 + 1, par3 + 1, par4))
+                if (j < l - 1 && renderer.blockAccess.isAirBlock(i + 1, j + 1, k)) //The other Half Top Edge for West/East
                 {
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d19, d6, d7);
-                    tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d19, d6, d8);
-                    tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d18, d5, d8);
-                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d18, d5, d7);
+                    tessellator.addVertexWithUV(iM, j1 + 0.01D, d19, d6, d7);
+                    tessellator.addVertexWithUV(i1, j1 + 0.01D, d19, d6, d8);
+                    tessellator.addVertexWithUV(i1, j1 + 0.01D, d18, d5, d8);
+                    tessellator.addVertexWithUV(iM, j1 + 0.01D, d18, d5, d7);
 //                    tessellator.addVertexWithUV(d12, (double)(par3 + 1) + 0.01D, d19, d6, d7);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d19, d6, d8);
 //                    tessellator.addVertexWithUV(d11, (double)(par3 + 1) + 0.01D, d18, d5, d8);
@@ -265,12 +271,12 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
                 }
             }
 
-            if (flag5)
+            if (connectDown) //Full Low Edge
             {
-                tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d19, d6, d9);
-                tessellator.addVertexWithUV(d12, (double)par3 - 0.01D, d19, d6, d7);
-                tessellator.addVertexWithUV(d12, (double)par3 - 0.01D, d18, d5, d7);
-                tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d18, d5, d9);
+                tessellator.addVertexWithUV(i0, (double)j - 0.01D, d19, d6, d9);
+                tessellator.addVertexWithUV(i1, (double)j - 0.01D, d19, d6, d7);
+                tessellator.addVertexWithUV(i1, (double)j - 0.01D, d18, d5, d7);
+                tessellator.addVertexWithUV(i0, (double)j - 0.01D, d18, d5, d9);
 //                tessellator.addVertexWithUV(d12, (double)par3 - 0.01D, d19, d6, d9);
 //                tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d19, d6, d7);
 //                tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d18, d5, d7);
@@ -278,24 +284,24 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
             }
             else
             {
-                if (par3 > 1 && renderer.blockAccess.isAirBlock(par2 - 1, par3 - 1, par4))
+                if (j > 1 && renderer.blockAccess.isAirBlock(i - 1, j - 1, k)) //West or East Half Low Edge
                 {
-                    tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d19, d6, d8);
-                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d19, d6, d9);
-                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d18, d5, d9);
-                    tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d18, d5, d8);
+                    tessellator.addVertexWithUV(i0, (double)j - 0.01D, d19, d6, d8);
+                    tessellator.addVertexWithUV(iM, (double)j - 0.01D, d19, d6, d9);
+                    tessellator.addVertexWithUV(iM, (double)j - 0.01D, d18, d5, d9);
+                    tessellator.addVertexWithUV(i0, (double)j - 0.01D, d18, d5, d8);
 //                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d19, d6, d8);
 //                    tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d19, d6, d9);
 //                    tessellator.addVertexWithUV(d10, (double)par3 - 0.01D, d18, d5, d9);
 //                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d18, d5, d8);
                 }
 
-                if (par3 > 1 && renderer.blockAccess.isAirBlock(par2 + 1, par3 - 1, par4))
+                if (j > 1 && renderer.blockAccess.isAirBlock(i + 1, j - 1, k)) //The other Half Low Edge for West/East
                 {
-                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d19, d6, d7);
-                    tessellator.addVertexWithUV(d12, (double)par3 - 0.01D, d19, d6, d8);
-                    tessellator.addVertexWithUV(d12, (double)par3 - 0.01D, d18, d5, d8);
-                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d18, d5, d7);
+                    tessellator.addVertexWithUV(iM, (double)j - 0.01D, d19, d6, d7);
+                    tessellator.addVertexWithUV(i1, (double)j - 0.01D, d19, d6, d8);
+                    tessellator.addVertexWithUV(i1, (double)j - 0.01D, d18, d5, d8);
+                    tessellator.addVertexWithUV(iM, (double)j - 0.01D, d18, d5, d7);
 //                    tessellator.addVertexWithUV(d12, (double)par3 - 0.01D, d19, d6, d7);
 //                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d19, d6, d8);
 //                    tessellator.addVertexWithUV(d11, (double)par3 - 0.01D, d18, d5, d8);
@@ -304,145 +310,145 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
             }
         }
 
-        if ((!flag || !flag1) && (flag2 || flag3 || flag || flag1))
+        if ((!connectNorth || !connectSouth) && connectAny) //Check for a Half West Pane OR a Half East Pane, AND that there is a connection
         {
-            if (flag && !flag1)
+            if (connectNorth && !connectSouth) //Half North Pane
             {
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d13, d0, d3);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d13, d0, d4);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d1, d4);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d1, d3);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d0, d3);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d0, d4);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d13, d1, d4);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d13, d1, d3);
+                tessellator.addVertexWithUV(iM, j1, kM, d0, d3);
+                tessellator.addVertexWithUV(iM, j0, kM, d0, d4);
+                tessellator.addVertexWithUV(iM, j0, k0, d1, d4);
+                tessellator.addVertexWithUV(iM, j1, k0, d1, d3);
 
-                if (!flag3 && !flag2)
+                if (!connectEast && !connectWest) //Check for ONLY a Half North Pane and render the edge in the middle
                 {
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1), d14, d5, d7);
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 0), d14, d5, d9);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 0), d14, d6, d9);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1), d14, d6, d7);
+                    tessellator.addVertexWithUV(d16, j1, kM, d5, d7);
+                    tessellator.addVertexWithUV(d16, j0, kM, d5, d9);
+                    tessellator.addVertexWithUV(d17, j0, kM, d6, d9);
+                    tessellator.addVertexWithUV(d17, j1, kM, d6, d7);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 1), d14, d5, d7);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 0), d14, d5, d9);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 0), d14, d6, d9);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1), d14, d6, d7);
                 }
 
-                if (flag4 || par3 < l - 1 && renderer.blockAccess.isAirBlock(par2, par3 + 1, par4 - 1))
+                if (connectUp || j < l - 1 && renderer.blockAccess.isAirBlock(i, j + 1, k - 1)) //Top North Edge for Half East Pane
                 {
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d13, d6, d7);
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d14, d6, d8);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d14, d5, d8);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d13, d5, d7);
+                    tessellator.addVertexWithUV(d16, j1 + 0.005D, k0, d6, d7);
+                    tessellator.addVertexWithUV(d16, j1 + 0.005D, kM, d6, d8);
+                    tessellator.addVertexWithUV(d17, j1 + 0.005D, kM, d5, d8);
+                    tessellator.addVertexWithUV(d17, j1 + 0.005D, k0, d5, d7);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d14, d6, d7);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d13, d6, d8);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d13, d5, d8);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d14, d5, d7);
                 }
 
-                if (flag5 || par3 > 1 && renderer.blockAccess.isAirBlock(par2, par3 - 1, par4 - 1))
+                if (connectDown || j > 1 && renderer.blockAccess.isAirBlock(i, j - 1, k - 1)) //Low North Edge for Half East Pane
                 {
-                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d13, d6, d7);
-                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d14, d6, d8);
-                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d14, d5, d8);
-                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d13, d5, d7);
+                    tessellator.addVertexWithUV(d16, (double)j - 0.005D, k0, d6, d7);
+                    tessellator.addVertexWithUV(d16, (double)j - 0.005D, kM, d6, d8);
+                    tessellator.addVertexWithUV(d17, (double)j - 0.005D, kM, d5, d8);
+                    tessellator.addVertexWithUV(d17, (double)j - 0.005D, k0, d5, d7);
 //                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d14, d6, d7);
 //                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d13, d6, d8);
 //                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d13, d5, d8);
 //                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d14, d5, d7);
                 }
             }
-            else if (!flag && flag1)
+            else if (!connectNorth && connectSouth) //Half South Pane
             {
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d1, d3);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d1, d4);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d15, d2, d4);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d15, d2, d3);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d15, d1, d3);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d15, d1, d4);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d2, d4);
-                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d2, d3);
+                tessellator.addVertexWithUV(iM, j1, k1, d1, d3);
+                tessellator.addVertexWithUV(iM, j0, k1, d1, d4);
+                tessellator.addVertexWithUV(iM, j0, kM, d2, d4);
+                tessellator.addVertexWithUV(iM, j1, kM, d2, d3);
 
-                if (!flag3 && !flag2)
+                if (!connectEast && !connectWest) //Check for ONLY a Half South Pane and render the edge in the middle
                 {
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 1), d14, d5, d7);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 0), d14, d5, d9);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 0), d14, d6, d9);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1), d14, d6, d7);
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1), d14, d5, d7);
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 0), d14, d5, d9);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 0), d14, d6, d9);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1), d14, d6, d7);
+                    tessellator.addVertexWithUV(d16, j1, kM, d5, d7);
+                    tessellator.addVertexWithUV(d16, j0, kM, d5, d9);
+                    tessellator.addVertexWithUV(d17, j0, kM, d6, d9);
+                    tessellator.addVertexWithUV(d17, j1, kM, d6, d7);
                 }
 
-                if (flag4 || par3 < l - 1 && renderer.blockAccess.isAirBlock(par2, par3 + 1, par4 + 1))
+                if (connectUp || j < l - 1 && renderer.blockAccess.isAirBlock(i, j + 1, k + 1)) //Top South Edge for Half East Pane
                 {
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d14, d5, d8);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d15, d5, d9);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d15, d6, d9);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d14, d6, d8);
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d15, d5, d8);
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d14, d5, d9);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d14, d6, d9);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d15, d6, d8);
+                    tessellator.addVertexWithUV(d16, j1 + 0.005D, k1, d5, d8);
+                    tessellator.addVertexWithUV(d16, j1 + 0.005D, kM, d5, d9);
+                    tessellator.addVertexWithUV(d17, j1 + 0.005D, kM, d6, d9);
+                    tessellator.addVertexWithUV(d17, j1 + 0.005D, k1, d6, d8);
                 }
 
-                if (flag5 || par3 > 1 && renderer.blockAccess.isAirBlock(par2, par3 - 1, par4 + 1))
+                if (connectDown || j > 1 && renderer.blockAccess.isAirBlock(i, j - 1, k + 1)) //Low South Edge for Half East Pane
                 {
 //                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d14, d5, d8);
 //                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d15, d5, d9);
 //                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d15, d6, d9);
 //                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d14, d6, d8);
-                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d15, d5, d8);
-                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d14, d5, d9);
-                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d14, d6, d9);
-                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d15, d6, d8);
+                    tessellator.addVertexWithUV(d16, (double)j - 0.005D, k1, d5, d8);
+                    tessellator.addVertexWithUV(d16, (double)j - 0.005D, kM, d5, d9);
+                    tessellator.addVertexWithUV(d17, (double)j - 0.005D, kM, d6, d9);
+                    tessellator.addVertexWithUV(d17, (double)j - 0.005D, k1, d6, d8);
                 }
             }
         }
-        else
+        else //Full North South Pane
         {
-            tessellator.addVertexWithUV(d11, (double)(par3 + 1), d15, d0, d3);
-            tessellator.addVertexWithUV(d11, (double)(par3 + 0), d15, d0, d4);
-            tessellator.addVertexWithUV(d11, (double)(par3 + 0), d13, d2, d4);
-            tessellator.addVertexWithUV(d11, (double)(par3 + 1), d13, d2, d3);
+            tessellator.addVertexWithUV(iM, j1, k1, d0, d3);
+            tessellator.addVertexWithUV(iM, j0, k1, d0, d4);
+            tessellator.addVertexWithUV(iM, j0, k0, d2, d4);
+            tessellator.addVertexWithUV(iM, j1, k0, d2, d3);
 //            tessellator.addVertexWithUV(d11, (double)(par3 + 1), d13, d0, d3);
 //            tessellator.addVertexWithUV(d11, (double)(par3 + 0), d13, d0, d4);
 //            tessellator.addVertexWithUV(d11, (double)(par3 + 0), d15, d2, d4);
 //            tessellator.addVertexWithUV(d11, (double)(par3 + 1), d15, d2, d3);
 
-            if (flag4)
+            if (connectUp) //Full Top Edge
             {
-                tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d15, d6, d9);
-                tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d13, d6, d7);
-                tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d13, d5, d7);
-                tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d15, d5, d9);
+                tessellator.addVertexWithUV(d17, j1 + 0.005D, k1, d6, d9);
+                tessellator.addVertexWithUV(d17, j1 + 0.005D, k0, d6, d7);
+                tessellator.addVertexWithUV(d16, j1 + 0.005D, k0, d5, d7);
+                tessellator.addVertexWithUV(d16, j1 + 0.005D, k1, d5, d9);
 //                tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d13, d6, d9);
 //                tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d15, d6, d7);
 //                tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d15, d5, d7);
 //                tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d13, d5, d9);
             }
-            else
+            else //Not a Full Top Edge
             {
-                if (par3 < l - 1 && renderer.blockAccess.isAirBlock(par2, par3 + 1, par4 - 1))
+                if (j < l - 1 && renderer.blockAccess.isAirBlock(i, j + 1, k - 1)) //North or South Half Top Edge
                 {
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d13, d6, d7);
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d14, d6, d8);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d14, d5, d8);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d13, d5, d7);
+                    tessellator.addVertexWithUV(d16, j1 + 0.005D, k0, d6, d7);
+                    tessellator.addVertexWithUV(d16, j1 + 0.005D, kM, d6, d8);
+                    tessellator.addVertexWithUV(d17, j1 + 0.005D, kM, d5, d8);
+                    tessellator.addVertexWithUV(d17, j1 + 0.005D, k0, d5, d7);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d14, d6, d7);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d13, d6, d8);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d13, d5, d8);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d14, d5, d7);
                 }
 
-                if (par3 < l - 1 && renderer.blockAccess.isAirBlock(par2, par3 + 1, par4 + 1))
+                if (j < l - 1 && renderer.blockAccess.isAirBlock(i, j + 1, k + 1)) //The other Half Top Edge for North/South
                 {
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d14, d5, d8);
-                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d15, d5, d9);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d15, d6, d9);
-                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d14, d6, d8);
+                    tessellator.addVertexWithUV(d16, j1 + 0.005D, kM, d5, d8);
+                    tessellator.addVertexWithUV(d16, j1 + 0.005D, k1, d5, d9);
+                    tessellator.addVertexWithUV(d17, j1 + 0.005D, k1, d6, d9);
+                    tessellator.addVertexWithUV(d17, j1 + 0.005D, kM, d6, d8);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d15, d5, d8);
 //                    tessellator.addVertexWithUV(d16, (double)(par3 + 1) + 0.005D, d14, d5, d9);
 //                    tessellator.addVertexWithUV(d17, (double)(par3 + 1) + 0.005D, d14, d6, d9);
@@ -450,37 +456,37 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
                 }
             }
 
-            if (flag5)
+            if (connectDown) //Full Low Edge
             {
-                tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d15, d6, d9);
-                tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d13, d6, d7);
-                tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d13, d5, d7);
-                tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d15, d5, d9);
+                tessellator.addVertexWithUV(d17, (double)j - 0.005D, k1, d6, d9);
+                tessellator.addVertexWithUV(d17, (double)j - 0.005D, k0, d6, d7);
+                tessellator.addVertexWithUV(d16, (double)j - 0.005D, k0, d5, d7);
+                tessellator.addVertexWithUV(d16, (double)j - 0.005D, k1, d5, d9);
 //                tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d13, d6, d9);
 //                tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d15, d6, d7);
 //                tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d15, d5, d7);
 //                tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d13, d5, d9);
             }
-            else
+            else //Not a Full Low Edge
             {
-                if (par3 > 1 && renderer.blockAccess.isAirBlock(par2, par3 - 1, par4 - 1))
+                if (j > 1 && renderer.blockAccess.isAirBlock(i, j - 1, k - 1)) //North or South Half Low Edge
                 {
-                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d13, d6, d7);
-                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d14, d6, d8);
-                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d14, d5, d8);
-                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d13, d5, d7);
+                    tessellator.addVertexWithUV(d16, (double)j - 0.005D, k0, d6, d7);
+                    tessellator.addVertexWithUV(d16, (double)j - 0.005D, kM, d6, d8);
+                    tessellator.addVertexWithUV(d17, (double)j - 0.005D, kM, d5, d8);
+                    tessellator.addVertexWithUV(d17, (double)j - 0.005D, k0, d5, d7);
 //                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d14, d6, d7);
 //                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d13, d6, d8);
 //                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d13, d5, d8);
 //                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d14, d5, d7);
                 }
 
-                if (par3 > 1 && renderer.blockAccess.isAirBlock(par2, par3 - 1, par4 + 1))
+                if (j > 1 && renderer.blockAccess.isAirBlock(i, j - 1, k + 1)) //The other Half Low Edge for North/South
                 {
-                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d14, d5, d8);
-                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d15, d5, d9);
-                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d15, d6, d9);
-                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d14, d6, d8);
+                    tessellator.addVertexWithUV(d16, (double)j - 0.005D, kM, d5, d8);
+                    tessellator.addVertexWithUV(d16, (double)j - 0.005D, k1, d5, d9);
+                    tessellator.addVertexWithUV(d17, (double)j - 0.005D, k1, d6, d9);
+                    tessellator.addVertexWithUV(d17, (double)j - 0.005D, kM, d6, d8);
 //                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d15, d5, d8);
 //                    tessellator.addVertexWithUV(d16, (double)par3 - 0.005D, d14, d5, d9);
 //                    tessellator.addVertexWithUV(d17, (double)par3 - 0.005D, d14, d6, d9);

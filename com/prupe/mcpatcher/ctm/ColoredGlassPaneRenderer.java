@@ -10,6 +10,7 @@ import com.prupe.mcpatcher.MCPatcherUtils;
 import com.prupe.mcpatcher.TessellatorUtils;
 import net.minecraft.block.Block;
 import net.minecraft.util.Icon;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
 
@@ -29,22 +30,43 @@ public class ColoredGlassPaneRenderer {
     private static double v0; // top edge
     private static double v1; // bottom edge
 
-    public static boolean render(RenderBlocks renderBlocks, ColoredGlassPaneBlock blockPane, int i, int j, int k) {
+    public static boolean render(RenderBlocks renderer, ColoredGlassPaneBlock blockPane, int i, int j, int k) {
+    	tessellator = Tessellator.instance;
+    	tessellator.setBrightness(blockPane.getMixedBrightnessForBlock(renderer.blockAccess, i, j, k));
+        float f = 1.0F;
+        int n = blockPane.colorMultiplier(renderer.blockAccess, i, j, k);
+        float f1 = (float)(n >> 16 & 255) / 255.0F;
+        float f2 = (float)(n >> 8 & 255) / 255.0F;
+        float f3 = (float)(n & 255) / 255.0F;
+
+        if (EntityRenderer.anaglyphEnable)
+        {
+            float f4 = (f1 * 30.0F + f2 * 59.0F + f3 * 11.0F) / 100.0F;
+            float f5 = (f1 * 30.0F + f2 * 70.0F) / 100.0F;
+            float f6 = (f1 * 30.0F + f3 * 70.0F) / 100.0F;
+            f1 = f4;
+            f2 = f5;
+            f3 = f6;
+        }
+
+        tessellator.setColorOpaque_F(f * f1, f * f2, f * f3);
     	
-    	boolean connectNorth = blockPane.canPaneConnectTo(renderBlocks.blockAccess,i, j, k, NORTH);
-        boolean connectSouth = blockPane.canPaneConnectTo(renderBlocks.blockAccess,i, j, k, SOUTH);
-        boolean connectWest = blockPane.canPaneConnectTo(renderBlocks.blockAccess,i, j, k, WEST);
-        boolean connectEast = blockPane.canPaneConnectTo(renderBlocks.blockAccess,i, j, k, EAST);
+    	
+    	
+    	boolean connectNorth = blockPane.canPaneConnectTo(renderer.blockAccess,i, j, k, NORTH);
+        boolean connectSouth = blockPane.canPaneConnectTo(renderer.blockAccess,i, j, k, SOUTH);
+        boolean connectWest = blockPane.canPaneConnectTo(renderer.blockAccess,i, j, k, WEST);
+        boolean connectEast = blockPane.canPaneConnectTo(renderer.blockAccess,i, j, k, EAST);
     	
         active = true;
         for (int face = TileOverride.NORTH_FACE; face <= TileOverride.EAST_FACE; face++) {
         	
-        	int metadata = renderBlocks.blockAccess.getBlockMetadata(i, j, k);
+        	int metadata = renderer.blockAccess.getBlockMetadata(i, j, k);
             Icon icon = blockPane.getIcon(0, metadata);
             Icon icon1 = blockPane.getSideTextureFromMetadata(metadata);
             
             
-            icons[face] = CTMUtils.getTile(renderBlocks, blockPane, i, j, k, face, icon, Tessellator.instance);
+            icons[face] = CTMUtils.getTile(renderer, blockPane, i, j, k, face, icon, Tessellator.instance);
             if (icons[face] == null) {
                 active = RenderPassAPI.instance.skipDefaultRendering(blockPane);
                 return false;
