@@ -67,7 +67,7 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
 		int l = renderer.blockAccess.getHeight();
         tessellator = Tessellator.instance;
         tessellator.setBrightness(blockPane.getMixedBrightnessForBlock(renderer.blockAccess, i, j, k));
-        float f = 1.0F;
+        float f = 0.8F;
         int n = blockPane.colorMultiplier(renderer.blockAccess, i, j, k);
         float f1 = (float)(n >> 16 & 255) / 255.0F;
         float f2 = (float)(n >> 8 & 255) / 255.0F;
@@ -91,11 +91,11 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
         icon = blockPane.getIcon(0, metadata);
         icon1 = blockPane.getSideTextureFromMetadata(metadata);
 
-        double d0 = (double)icon.getMinU();
-        double d1 = (double)icon.getInterpolatedU(8.0D);
-        double d2 = (double)icon.getMaxU();
-        double d3 = (double)icon.getMinV();
-        double d4 = (double)icon.getMaxV();
+        double u0 = (double)icon.getMinU();
+        double uM = (double)icon.getInterpolatedU(8.0D);
+        double u1 = (double)icon.getMaxU();
+        double v0 = (double)icon.getMinV();
+        double v1 = (double)icon.getMaxV();
         double d5 = (double)icon1.getInterpolatedU(7.0D);
         double d6 = (double)icon1.getInterpolatedU(9.0D);
         double d7 = (double)icon1.getMinV();
@@ -106,7 +106,7 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
         double i1 = (double)(i + 1);
         double j0 = (double)j;
         double j1 = (double)j + 1.0D;
-        double k0 = (double)k;
+        double k0= (double)k;
         double kM = (double)k + 0.5D;
         double k1 = (double)(k + 1);
         double d16 = (double)i + 0.5D - 0.0625D;
@@ -127,14 +127,15 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
         {
             if (connectWest && !connectEast) //Half West Pane
             {
-                tessellator.addVertexWithUV(i0, j1, kM, d0, d3);
-                tessellator.addVertexWithUV(i0, j0, kM, d0, d4);
-                tessellator.addVertexWithUV(iM, j0, kM, d1, d4);
-                tessellator.addVertexWithUV(iM, j1, kM, d1, d3);
-//                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d0, d3);
-//                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d0, d4);
-//                tessellator.addVertexWithUV(d10, (double)(par3 + 0), d14, d1, d4);
-//                tessellator.addVertexWithUV(d10, (double)(par3 + 1), d14, d1, d3);
+            	tessellator.addVertexWithUV(i0, j0, kM, uM, v1);
+            	tessellator.addVertexWithUV(i0, j1, kM, uM, v0);
+            	tessellator.addVertexWithUV(iM, j1, kM, u0, v0);
+            	tessellator.addVertexWithUV(iM, j0, kM, u0, v1);
+                
+//                tessellator.addVertexWithUV(iM, j1, kM, u0, v0);
+//                tessellator.addVertexWithUV(iM, j0, kM, u0, v1);
+//                tessellator.addVertexWithUV(i0, j0, kM, uM, v1);
+//                tessellator.addVertexWithUV(i0, j1, kM, uM, v0);
 
                 if (!connectSouth && !connectNorth) //Check for ONLY a Half West Pane and render the edge in the middle
                 {
@@ -174,14 +175,14 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
             }
             else if (!connectWest && connectEast) //Half East Pane
             {
-                tessellator.addVertexWithUV(iM, j1, kM, d1, d3);
-                tessellator.addVertexWithUV(iM, j0, kM, d1, d4);
-                tessellator.addVertexWithUV(i1, j0, kM, d2, d4);
-                tessellator.addVertexWithUV(i1, j1, kM, d2, d3);
-//                tessellator.addVertexWithUV(d12, (double)(par3 + 1), d14, d1, d3);
-//                tessellator.addVertexWithUV(d12, (double)(par3 + 0), d14, d1, d4);
-//                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d2, d4);
-//                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d2, d3);
+//                tessellator.addVertexWithUV(iM, j1, kM, uM, v0);
+//                tessellator.addVertexWithUV(iM, j0, kM, uM, v1);
+//                tessellator.addVertexWithUV(i1, j0, kM, u1, v1);
+//                tessellator.addVertexWithUV(i1, j1, kM, u1, v0);
+                tessellator.addVertexWithUV(i1, j0, kM, uM, v1);
+                tessellator.addVertexWithUV(i1, j1, kM, uM, v0);
+                tessellator.addVertexWithUV(iM, j1, kM, u1, v0);
+                tessellator.addVertexWithUV(iM, j0, kM, u1, v1);
 
                 if (!connectSouth && !connectNorth) //Check for ONLY a Half East Pane and render the edge in the middle
                 {
@@ -220,16 +221,16 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
                 }
             }
         }
-        else //Full East West Pane
+        else //Full East West Pane	
         {
-            tessellator.addVertexWithUV(i0, j1, kM, d0, d3);
-            tessellator.addVertexWithUV(i0, j0, kM, d0, d4);
-            tessellator.addVertexWithUV(i1, j0, kM, d2, d4);
-            tessellator.addVertexWithUV(i1, j1, kM, d2, d3);
-//            tessellator.addVertexWithUV(d12, (double)(par3 + 1), d14, d0, d3);
-//            tessellator.addVertexWithUV(d12, (double)(par3 + 0), d14, d0, d4);
-//            tessellator.addVertexWithUV(d10, (double)(par3 + 0), d14, d2, d4);
-//            tessellator.addVertexWithUV(d10, (double)(par3 + 1), d14, d2, d3);
+            tessellator.addVertexWithUV(i0, j1, kM, u1, v0);
+            tessellator.addVertexWithUV(i0, j0, kM, u1, v1);
+            tessellator.addVertexWithUV(i1, j0, kM, u0, v1);
+            tessellator.addVertexWithUV(i1, j1, kM, u0, v0);
+//            tessellator.addVertexWithUV(i1, j1, kM, u0, v0);
+//            tessellator.addVertexWithUV(i1, j0, kM, u0, v1);
+//            tessellator.addVertexWithUV(i0, j0, kM, u1, v1);
+//            tessellator.addVertexWithUV(i0, j1, kM, u1, v0);
 
             if (connectUp) //Full Top Edge
             {
@@ -314,14 +315,14 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
         {
             if (connectNorth && !connectSouth) //Half North Pane
             {
-//                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d13, d0, d3);
-//                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d13, d0, d4);
-//                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d1, d4);
-//                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d14, d1, d3);
-                tessellator.addVertexWithUV(iM, j1, kM, d0, d3);
-                tessellator.addVertexWithUV(iM, j0, kM, d0, d4);
-                tessellator.addVertexWithUV(iM, j0, k0, d1, d4);
-                tessellator.addVertexWithUV(iM, j1, k0, d1, d3);
+                tessellator.addVertexWithUV(iM, j1, kM, u0, v0);
+                tessellator.addVertexWithUV(iM, j0, kM, u0, v1);
+                tessellator.addVertexWithUV(iM, j0, k0, uM, v1);
+                tessellator.addVertexWithUV(iM, j1, k0, uM, v0);
+//                tessellator.addVertexWithUV(iM, j1, kM, u0, v0);
+//                tessellator.addVertexWithUV(iM, j0, kM, u0, v1);
+//                tessellator.addVertexWithUV(iM, j0, k0, uM, v1);
+//                tessellator.addVertexWithUV(iM, j1, k0, uM, v0);
 
                 if (!connectEast && !connectWest) //Check for ONLY a Half North Pane and render the edge in the middle
                 {
@@ -365,10 +366,10 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d14, d1, d4);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 0), d15, d2, d4);
 //                tessellator.addVertexWithUV(d11, (double)(par3 + 1), d15, d2, d3);
-                tessellator.addVertexWithUV(iM, j1, k1, d1, d3);
-                tessellator.addVertexWithUV(iM, j0, k1, d1, d4);
-                tessellator.addVertexWithUV(iM, j0, kM, d2, d4);
-                tessellator.addVertexWithUV(iM, j1, kM, d2, d3);
+                tessellator.addVertexWithUV(iM, j1, k1, uM, v0);
+                tessellator.addVertexWithUV(iM, j0, k1, uM, v1);
+                tessellator.addVertexWithUV(iM, j0, kM, u1, v1);
+                tessellator.addVertexWithUV(iM, j1, kM, u1, v0);
 
                 if (!connectEast && !connectWest) //Check for ONLY a Half South Pane and render the edge in the middle
                 {
@@ -409,10 +410,10 @@ public class RenderColoredGlassPaneBlock implements ISimpleBlockRenderingHandler
         }
         else //Full North South Pane
         {
-            tessellator.addVertexWithUV(iM, j1, k1, d0, d3);
-            tessellator.addVertexWithUV(iM, j0, k1, d0, d4);
-            tessellator.addVertexWithUV(iM, j0, k0, d2, d4);
-            tessellator.addVertexWithUV(iM, j1, k0, d2, d3);
+            tessellator.addVertexWithUV(iM, j1, k1, u0, v0);
+            tessellator.addVertexWithUV(iM, j0, k1, u0, v1);
+            tessellator.addVertexWithUV(iM, j0, k0, u1, v1);
+            tessellator.addVertexWithUV(iM, j1, k0, u1, v0);
 //            tessellator.addVertexWithUV(d11, (double)(par3 + 1), d13, d0, d3);
 //            tessellator.addVertexWithUV(d11, (double)(par3 + 0), d13, d0, d4);
 //            tessellator.addVertexWithUV(d11, (double)(par3 + 0), d15, d2, d4);
