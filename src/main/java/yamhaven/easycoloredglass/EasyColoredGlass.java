@@ -18,7 +18,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 public class EasyColoredGlass
 {
     public static Block coloredSand;
-    public static String coloredSandName = "coloredSand";
+    public static String coloredSandName = "coloredSandBlock";
 
     public static final String MOD_ID = "easycoloredglass";
     public static final String MOD_NAME = "Easy Colored Glass";
