@@ -60,8 +60,7 @@ public class EasyColoredGlass
     }
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
+    public void preInit(FMLPreInitializationEvent event) {
         Blocks.addBlocks();
         //TODO:
         /*
@@ -75,8 +74,7 @@ public class EasyColoredGlass
     }
 
     @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
+    public void init(FMLInitializationEvent event) {
         // Add Recipes
         Blocks.addRecipes();
         proxy.init();

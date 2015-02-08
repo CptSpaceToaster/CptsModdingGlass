@@ -44,8 +44,7 @@ public class Blocks {
     }
 
     protected static void addRecipes() {
-        for (int i = 0; i < 16; i++)
-        {
+        for (int i = 0; i < 16; i++) {
             ItemStack cDye = new ItemStack(Items.dye, 1, i);
             ItemStack cSand = new ItemStack(coloredSand, 1, i);
             ItemStack cSandstone_normal = new ItemStack(coloredSandstone_normal, 1, i);

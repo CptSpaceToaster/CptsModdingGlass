@@ -15,8 +15,7 @@ public abstract class BlockColoredSandstone extends Block {
     protected IIcon[] top_textures;
     protected IIcon[] bot_textures;
 
-    public BlockColoredSandstone()
-    {
+    public BlockColoredSandstone() {
         super(Material.rock);
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
@@ -24,8 +23,7 @@ public abstract class BlockColoredSandstone extends Block {
     /**
      * Gets the block's texture. Args: side_texture, meta
      */
-    public IIcon getIcon(int p_149691_1_, int p_149691_2_)
-    {
+    public IIcon getIcon(int p_149691_1_, int p_149691_2_) {
         if (p_149691_1_ == 0) {
             return this.bot_textures[p_149691_2_];
         } else if (p_149691_1_ == 1) {
@@ -46,8 +44,7 @@ public abstract class BlockColoredSandstone extends Block {
     /**
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
-    public void getSubBlocks(Item p_149666_1_, CreativeTabs p_149666_2_, List p_149666_3_)
-    {
+    public void getSubBlocks(Item p_149666_1_, CreativeTabs p_149666_2_, List p_149666_3_) {
         for(int i=0; i<16; i++) {
             p_149666_3_.add(new ItemStack(p_149666_1_, 1, i));
         }

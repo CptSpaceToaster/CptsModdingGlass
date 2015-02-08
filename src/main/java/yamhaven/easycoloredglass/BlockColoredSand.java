@@ -13,8 +13,7 @@ import java.util.List;
 public class BlockColoredSand extends BlockFalling {
     private IIcon[] icons = new IIcon[16];
 
-    public BlockColoredSand()
-    {
+    public BlockColoredSand() {
         super(Material.sand);
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
@@ -24,8 +23,7 @@ public class BlockColoredSand extends BlockFalling {
         return icons[meta];
     }
 
-    public void registerBlockIcons(IIconRegister p_149651_1_)
-    {
+    public void registerBlockIcons(IIconRegister p_149651_1_) {
         for(int i=0; i<16; i++) {
             icons[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandName + "/" + i);
         }
@@ -42,8 +40,7 @@ public class BlockColoredSand extends BlockFalling {
     /**
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
-    public void getSubBlocks(Item p_149666_1_, CreativeTabs p_149666_2_, List p_149666_3_)
-    {
+    public void getSubBlocks(Item p_149666_1_, CreativeTabs p_149666_2_, List p_149666_3_) {
         for(int i=0; i<16; i++) {
             p_149666_3_.add(new ItemStack(p_149666_1_, 1, i));
         }
