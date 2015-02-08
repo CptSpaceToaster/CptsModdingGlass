@@ -15,9 +15,9 @@ public class BlockColoredSandstone_normal extends BlockColoredSandstone {
 
         for (int i = 0; i < 16; ++i)
         {
-            this.side_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandstone + "/normal" + i);
-            this.top_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandstone + "/top" + i);
-            this.bot_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandstone + "/bottom" + i);
+            this.side_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandstoneName + "/normal" + i);
+            this.top_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandstoneName + "/top" + i);
+            this.bot_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandstoneName + "/bottom" + i);
         }
     }
 }

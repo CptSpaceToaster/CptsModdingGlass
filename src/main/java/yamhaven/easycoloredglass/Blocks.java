@@ -17,8 +17,8 @@ public class Blocks {
     public static Block coloredSandstone_carved;
     public static Block coloredSandstone_stairs[] = new Block[16];
 
-    public static String coloredSandName = "coloredSandBlock";
-    public static String coloredSandstone = "coloredSandstone";
+    public static String coloredSandName = "coloredSand";
+    public static String coloredSandstoneName = "coloredSandstone";
     public static String coloredSandstoneName_normal = "coloredSandstone_normal";
     public static String coloredSandstoneName_smooth = "coloredSandstone_smooth";
     public static String coloredSandstoneName_carved = "coloredSandstone_carved";
