@@ -10,9 +10,9 @@ public class BlockColoredSandstone_carved extends BlockColoredSandstone {
         this.bot_textures = new IIcon[16];
 
         for (int i = 0; i < 16; ++i) {
-            this.side_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandstoneName + "/carved" + i);
-            this.top_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandstoneName + "/top" + i);
-            this.bot_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandstoneName + "/bottom" + i);
+            this.side_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + ECGBlocks.coloredSandstoneName + "/carved" + i);
+            this.top_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + ECGBlocks.coloredSandstoneName + "/top" + i);
+            this.bot_textures[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + ECGBlocks.coloredSandstoneName + "/bottom" + i);
         }
     }
 }

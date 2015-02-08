@@ -5,12 +5,12 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
-import static net.minecraft.init.Blocks.sand;
-import static net.minecraft.init.Blocks.sandstone;
-import static net.minecraft.init.Blocks.stained_glass;
+import static net.minecraft.init.Blocks.*;
 
-public class Blocks {
+public class ECGBlocks {
     public static Block coloredSand;
     public static Block coloredSandstone_normal;
     public static Block coloredSandstone_smooth;
@@ -38,25 +38,51 @@ public class Blocks {
         GameRegistry.registerBlock(coloredSandstone_normal, ItemCGBlock.class, EasyColoredGlass.MOD_ID + coloredSandstoneName_normal);
         GameRegistry.registerBlock(coloredSandstone_smooth, ItemCGBlock.class, EasyColoredGlass.MOD_ID + coloredSandstoneName_smooth);
         GameRegistry.registerBlock(coloredSandstone_carved, ItemCGBlock.class, EasyColoredGlass.MOD_ID + coloredSandstoneName_carved);
+
         for (int i = 0; i < 16; i++) {
+            OreDictionary.registerOre(coloredSandstoneName + i, new ItemStack(coloredSandstone_normal, 1, i));
+            OreDictionary.registerOre(coloredSandstoneName + i, new ItemStack(coloredSandstone_smooth, 1, i));
+            OreDictionary.registerOre(coloredSandstoneName + i, new ItemStack(coloredSandstone_carved, 1, i));
+
             GameRegistry.registerBlock(coloredSandstone_stairs[i], ItemCGBlock.class, EasyColoredGlass.MOD_ID + coloredSandstoneName_stairs + i);
         }
     }
 
     protected static void addRecipes() {
-        for (int i = 0; i < 16; i++) {
-            ItemStack cDye = new ItemStack(Items.dye, 1, i);
-            ItemStack cSand = new ItemStack(coloredSand, 1, i);
-            ItemStack cSandstone_normal = new ItemStack(coloredSandstone_normal, 1, i);
+        String[] dyes =
+        {
+            "Black",
+            "Red",
+            "Green",
+            "Brown",
+            "Blue",
+            "Purple",
+            "Cyan",
+            "LightGray",
+            "Gray",
+            "Pink",
+            "Lime",
+            "Yellow",
+            "LightBlue",
+            "Magenta",
+            "Orange",
+            "White"
+        };
 
+        for (int i = 0; i < 16; i++) {
             // Dyeing Recipes
-            GameRegistry.addRecipe(new ItemStack(coloredSand, 8, i), "sss", "sds", "sss", 's', new ItemStack(sand, 1, 0), 'd', cDye);
-            GameRegistry.addRecipe(new ItemStack(coloredSandstone_normal, 8, i), "sss", "sds", "sss", 's', new ItemStack(sandstone, 1, 0), 'd', cDye);
-            GameRegistry.addRecipe(cSandstone_normal, "ss", "ss", 's', cSand);
-            // TODO: Ordict the colored Sandstone entries together
-            GameRegistry.addRecipe(new ItemStack(coloredSandstone_smooth, 4, i), "ss", "ss", 's', cSandstone_normal);
-            GameRegistry.addRecipe(new ItemStack(coloredSandstone_stairs[i], 4, 0), "s  ", "ss ", "sss", 's', cSandstone_normal);
-            GameRegistry.addRecipe(new ItemStack(coloredSandstone_stairs[i], 4, 0), "  s", " ss", "sss", 's', cSandstone_normal);
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(coloredSand, 8, i), "sss", "sds", "sss", 's', new ItemStack(sand, 1, 0), 'd', "dye" + dyes[i] ));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(coloredSandstone_normal, 8, i), "sss", "sds", "sss", 's', new ItemStack(sandstone, 1, 0), 'd', "dye" + dyes[i]));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(coloredSandstone_smooth, 8, i), "sss", "sds", "sss", 's', new ItemStack(sandstone, 1, 1), 'd', "dye" + dyes[i]));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(coloredSandstone_carved, 8, i), "sss", "sds", "sss", 's', new ItemStack(sandstone, 1, 2), 'd', "dye" + dyes[i]));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(coloredSandstone_stairs[i], 8, 0), "sss", "sds", "sss", 's', new ItemStack(sandstone_stairs, 1, 0), 'd', "dye" + dyes[i]));
+
+            // Block recipes
+            GameRegistry.addRecipe(new ItemStack(coloredSandstone_normal, 1, i), "ss", "ss", 's', new ItemStack(coloredSand, 1, i));
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(coloredSandstone_smooth, 4, i), "ss", "ss", 's', coloredSandstoneName + i));
+            GameRegistry.addRecipe(new ShapedOreRecipe(coloredSandstone_stairs[i], "s  ", "ss ", "sss", 's', coloredSandstoneName + i));
+            GameRegistry.addRecipe(new ShapedOreRecipe(coloredSandstone_stairs[i], "  s", " ss", "sss", 's', coloredSandstoneName + i));
+
             // Smelting Recipes
             FurnaceRecipes.smelting().func_151394_a(new ItemStack(coloredSand, 1, i), new ItemStack(stained_glass, 1, 15 - i), 0.1f);
         }

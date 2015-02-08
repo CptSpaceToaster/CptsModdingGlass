@@ -25,7 +25,7 @@ public class BlockColoredSand extends BlockFalling {
 
     public void registerBlockIcons(IIconRegister p_149651_1_) {
         for(int i=0; i<16; i++) {
-            icons[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + Blocks.coloredSandName + "/" + i);
+            icons[i] = p_149651_1_.registerIcon(EasyColoredGlass.MOD_ID + ":" + ECGBlocks.coloredSandName + "/" + i);
         }
     }
 

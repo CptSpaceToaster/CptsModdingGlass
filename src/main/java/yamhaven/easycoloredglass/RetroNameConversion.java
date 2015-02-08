@@ -20,7 +20,6 @@ public class RetroNameConversion {
 
         protected static String conversion(String oldname, int step) {
             switch (step) {
-                //TODO:
                 /* Conversion strategies.  Currently, this is simple enough, that we only need to lookup an oldname->newname using the map */
                 case 0:
                     return namingConversion.get(oldname);
