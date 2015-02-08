@@ -56,6 +56,8 @@ public class Blocks {
             GameRegistry.addRecipe(cSandstone_normal, "ss", "ss", 's', cSand);
             // TODO: Ordict the colored Sandstone entries together
             GameRegistry.addRecipe(new ItemStack(coloredSandstone_smooth, 4, i), "ss", "ss", 's', cSandstone_normal);
+            GameRegistry.addRecipe(new ItemStack(coloredSandstone_stairs[i], 4, 0), "s  ", "ss ", "sss", 's', cSandstone_normal);
+            GameRegistry.addRecipe(new ItemStack(coloredSandstone_stairs[i], 4, 0), "  s", " ss", "sss", 's', cSandstone_normal);
             // Smelting Recipes
             FurnaceRecipes.smelting().func_151394_a(new ItemStack(coloredSand, 1, i), new ItemStack(stained_glass, 1, 15 - i), 0.1f);
         }
