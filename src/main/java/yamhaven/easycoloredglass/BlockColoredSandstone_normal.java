@@ -3,9 +3,6 @@ package yamhaven.easycoloredglass;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
-/**
- * Created by toaster on 2/7/15.
- */
 public class BlockColoredSandstone_normal extends BlockColoredSandstone {
     public void registerBlockIcons(IIconRegister p_149651_1_)
     {

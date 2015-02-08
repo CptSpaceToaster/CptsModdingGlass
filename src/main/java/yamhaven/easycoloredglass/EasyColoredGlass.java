@@ -22,7 +22,7 @@ public class EasyColoredGlass
 {
     public static final String MOD_ID = "easycoloredglass";
     public static final String MOD_NAME = "Easy Colored Glass";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.1";
     public static final Logger CGLog = LogManager.getLogger(MOD_NAME);
 
     @Mod.Instance(MOD_ID)
