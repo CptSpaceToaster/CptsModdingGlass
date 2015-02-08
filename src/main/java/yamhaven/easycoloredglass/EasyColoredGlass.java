@@ -53,9 +53,9 @@ public class EasyColoredGlass
 
                 if (item != null) {
                     m.remap(item);
-                    CGLog.info("Remapping block " + m.name + " to " + item.getUnlocalizedName());
+                    CGLog.info("Remapping item " + m.name + " to " + item.getUnlocalizedName());
                 } else {
-                    CGLog.warn("Block " + m.name + " could not get remapped.");
+                    CGLog.warn("Item " + m.name + " could not get remapped.");
                 }
             }
         }
