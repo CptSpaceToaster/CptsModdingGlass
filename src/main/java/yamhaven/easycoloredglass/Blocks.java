@@ -15,13 +15,14 @@ public class Blocks {
     public static Block coloredSandstone_normal;
     public static Block coloredSandstone_smooth;
     public static Block coloredSandstone_carved;
-
+    public static Block coloredSandstone_stairs[] = new Block[16];
 
     public static String coloredSandName = "coloredSandBlock";
     public static String coloredSandstone = "coloredSandstone";
     public static String coloredSandstoneName_normal = "coloredSandstone_normal";
     public static String coloredSandstoneName_smooth = "coloredSandstone_smooth";
     public static String coloredSandstoneName_carved = "coloredSandstone_carved";
+    public static String coloredSandstoneName_stairs = "coloredSandstone_stairs";
 
 
     protected static void addBlocks() {
@@ -29,11 +30,17 @@ public class Blocks {
         coloredSandstone_normal = new BlockColoredSandstone_normal().setHardness(0.8F).setStepSound(Block.soundTypePiston).setBlockName(coloredSandstoneName_normal);
         coloredSandstone_smooth = new BlockColoredSandstone_smooth().setHardness(0.8F).setStepSound(Block.soundTypePiston).setBlockName(coloredSandstoneName_smooth);
         coloredSandstone_carved = new BlockColoredSandstone_carved().setHardness(0.8F).setStepSound(Block.soundTypePiston).setBlockName(coloredSandstoneName_carved);
+        for (int i = 0; i < 16; i++) {
+            coloredSandstone_stairs[i] = new BlockColoredStairs(coloredSandstone_normal, i).setBlockName(coloredSandstoneName_stairs + i);
+        }
 
         GameRegistry.registerBlock(coloredSand, ItemCGBlock.class, EasyColoredGlass.MOD_ID + coloredSandName);
         GameRegistry.registerBlock(coloredSandstone_normal, ItemCGBlock.class, EasyColoredGlass.MOD_ID + coloredSandstoneName_normal);
         GameRegistry.registerBlock(coloredSandstone_smooth, ItemCGBlock.class, EasyColoredGlass.MOD_ID + coloredSandstoneName_smooth);
         GameRegistry.registerBlock(coloredSandstone_carved, ItemCGBlock.class, EasyColoredGlass.MOD_ID + coloredSandstoneName_carved);
+        for (int i = 0; i < 16; i++) {
+            GameRegistry.registerBlock(coloredSandstone_stairs[i], ItemCGBlock.class, EasyColoredGlass.MOD_ID + coloredSandstoneName_stairs + i);
+        }
     }
 
     protected static void addRecipes() {
