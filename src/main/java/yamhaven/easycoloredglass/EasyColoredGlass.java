@@ -7,8 +7,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
@@ -18,11 +17,12 @@ import org.apache.logging.log4j.Logger;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 
+import static net.minecraft.init.Blocks.*;
+
 @Mod(modid = EasyColoredGlass.MOD_ID, version = EasyColoredGlass.VERSION)
 public class EasyColoredGlass
 {
-    public static Block coloredSand;
-    public static String coloredSandName = "coloredSandBlock";
+
 
     public static final String MOD_ID = "easycoloredglass";
     public static final String MOD_NAME = "Easy Colored Glass";
@@ -38,8 +38,7 @@ public class EasyColoredGlass
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        EasyColoredGlass.coloredSand = new BlockColoredSand().setHardness(0.5F).setStepSound(Block.soundTypeSand).setBlockName(EasyColoredGlass.coloredSandName);
-        GameRegistry.registerBlock(EasyColoredGlass.coloredSand, ItemCGBlock.class, EasyColoredGlass.MOD_ID + EasyColoredGlass.coloredSandName);
+        Blocks.addBlocks();
         //TODO:
         /*
         File configFile = event.getSuggestedConfigurationFile();
@@ -55,14 +54,7 @@ public class EasyColoredGlass
     public void init(FMLInitializationEvent event)
     {
         // Add Recipes
-        for (int i = 0; i < 16; i++)
-        {
-            // Dyeing Recipes
-            GameRegistry.addRecipe(new ItemStack(coloredSand, 8, i), "sss", "sds", "sss", 's', new ItemStack(Blocks.sand, 1, 0), 'd', new ItemStack(Items.dye, 1, i));
-            // Smelting Recipes
-            FurnaceRecipes.smelting().func_151394_a(new ItemStack(coloredSand, 1, i), new ItemStack(Blocks.stained_glass, 1, 15-i), 0.1f);
-        }
-
+        Blocks.addRecipes();
         proxy.init();
     }
 
