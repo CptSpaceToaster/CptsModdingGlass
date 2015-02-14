@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import yamhaven.easycoloredglass.Block.ECGBlocks;
 
 @Mod(modid = EasyColoredGlass.MOD_ID, version = EasyColoredGlass.VERSION)
 public class EasyColoredGlass

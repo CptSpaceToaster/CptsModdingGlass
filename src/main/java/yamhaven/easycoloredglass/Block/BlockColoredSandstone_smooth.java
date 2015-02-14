@@ -1,7 +1,8 @@
-package yamhaven.easycoloredglass;
+package yamhaven.easycoloredglass.Block;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
+import yamhaven.easycoloredglass.EasyColoredGlass;
 
 public class BlockColoredSandstone_smooth extends BlockColoredSandstone {
     public IIcon getIcon(int p_149691_1_, int p_149691_2_) {

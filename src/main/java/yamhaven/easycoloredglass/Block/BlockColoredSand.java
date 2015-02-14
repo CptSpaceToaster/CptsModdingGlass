@@ -1,4 +1,4 @@
-package yamhaven.easycoloredglass;
+package yamhaven.easycoloredglass.Block;
 
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
@@ -7,6 +7,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import yamhaven.easycoloredglass.EasyColoredGlass;
 
 import java.util.List;
 

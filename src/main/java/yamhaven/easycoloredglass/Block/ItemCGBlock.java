@@ -1,4 +1,4 @@
-package yamhaven.easycoloredglass;
+package yamhaven.easycoloredglass.Block;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;

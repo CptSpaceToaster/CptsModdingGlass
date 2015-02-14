@@ -1,4 +1,4 @@
-package yamhaven.easycoloredglass;
+package yamhaven.easycoloredglass.Block;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import yamhaven.easycoloredglass.EasyColoredGlass;
 
 import static net.minecraft.init.Blocks.*;
 
